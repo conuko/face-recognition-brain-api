@@ -34,24 +34,23 @@ app.get('/', (req, res) => {
 })
 
 
-// /SIGN IN --> check if the user typed in on the frontend singin is already in the database
+// /SIGN IN --> check if the user typed in on the frontend Signin.js is already in the database
 app.post('/signin', (req, res) => {
     if (req.body.email === database.users[0].email &&
         req.body.password === database.users[0].password) {
-            res.json('success');
+            res.json(database.users[0]);
     } else {
         res.status(400).json('error logging in');
     }
 })
 
-// REGISTER --> create a new user based on the information typed in on the frontend
+// REGISTER --> create a new user based on the information typed in on the frontend Register.js
 app.post('/register', (req, res) => {
     const { email, name, password } = req.body;
     database.users.push({
         id: '125',
         name: name,
         email: email,
-        password: password,
         entries: 0,
         joined: new Date()
     });
