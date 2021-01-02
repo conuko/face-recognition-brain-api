@@ -32,6 +32,7 @@ app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcry
 app.get('/profile/:id', (req, res) => {profile.handleProfileGet(req, res, db) });
 // /IMAGE --> count how many entries a user has. The entry gets updated everytime the user let the program detect a face in an image:
 app.put('/image', (req, res) => { image.handleImage(req, res, db) });
+app.post('/imageurl', (req, res) => { image.handleApiCall(req, res) });
 
 app.listen(3000, () => {
     console.log('app is running on port 3000');
