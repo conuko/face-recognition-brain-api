@@ -5,10 +5,9 @@ import cors from 'cors';
 import knex from 'knex';
 
 import register from './controllers/register.js';
-
-
-// const myPlaintextPassword = 's0/\/\P4$$w0rD';
-// const someOtherPlaintextPassword = 'not_bacon';
+import signin from './controllers/signin.js';
+import profile from './controllers/profile.js';
+import image from './controllers/image.js';
 
 const db = knex({
     client: 'pg',
@@ -20,63 +19,19 @@ const db = knex({
     }
 });
 
-
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
 
-
 // /SIGN IN --> check if the user typed in on the frontend Signin.js is already in the database
-app.post('/signin', (req, res) => {
-    db.select('email', 'hash').from('login')
-    .where('email', '=', req.body.email)
-    .then(data => {
-        const isValid = bcrypt.compareSync(req.body.password, data[0].hash); // check if the password is correct with bcrypt
-        if (isValid) {
-            return db.select('*').from('users')
-            .where('email', '=', req.body.email)
-            .then(user => {
-                res.json(user[0])
-            })
-            .catch(err => res.status(400).json('unable to get user'));
-        } else {
-            res.status(400).json('wrong credentials');
-        }
-    })
-    .catch(err => res.status(400).json('wrong credentials'));
-})
-
+app.post('/signin', (req, res) => { signin.handleSignin(req, res, db, bcrypt) });
 // /REGISTER --> create a new user based on the information typed in on the frontend Register.js
-app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
-
+app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) });
 // /PROFILE/:USER ID
-app.get('/profile/:id', (req, res) => {
-    const { id } = req.params;
-    db.select('*').from('users')
-        .where({id}) /* to get the user profil connected to the typed in ID */
-        .then(user => {
-            if (user.length) {
-                res.json(user[0]);
-            } else {
-                res.status(400).json('Not found')
-            }
-        })
-        .catch(err => res.status(400).json('Not found'));
-})
-
+app.get('/profile/:id', (req, res) => {profile.handleProfileGet(req, res, db) });
 // /IMAGE --> count how many entries a user has. The entry gets updated everytime the user let the program detect a face in an image:
-app.put('/image', (req, res) => {
-    const { id } = req.body;
-    // grab the entries from the database and increase it:
-    db('users').where('id', '=', id)
-    .increment('entries', 1)
-    .returning('entries')
-    .then(entries => {
-        res.json(entries[0]);
-    })
-    .catch(err => res.status(400).json('unable to get entries'));
-})
+app.put('/image', (req, res) => { image.handleImage(req, res, db) });
 
 app.listen(3000, () => {
     console.log('app is running on port 3000');
