@@ -4,7 +4,9 @@ import bcrypt from 'bcrypt';
 import cors from 'cors';
 import knex from 'knex';
 
-const saltRounds = 10;
+import register from './controllers/register.js';
+
+
 // const myPlaintextPassword = 's0/\/\P4$$w0rD';
 // const someOtherPlaintextPassword = 'not_bacon';
 
@@ -46,34 +48,7 @@ app.post('/signin', (req, res) => {
 })
 
 // /REGISTER --> create a new user based on the information typed in on the frontend Register.js
-app.post('/register', (req, res) => {
-    const { email, name, password } = req.body;
-    // Store hash in your password DB:
-    const hash = bcrypt.hashSync(password, saltRounds);
-    db.transaction(trx => {
-        trx.insert({
-            hash: hash,
-            email: email
-        })
-        .into('login')
-        .returning('email')
-        .then(loginEmail => {
-            return trx('users')
-                .returning('*') /* user insert Ann and return all the columns  */
-                .insert({
-                    email: loginEmail[0],
-                    name: name,
-                    joined: new Date()
-                })
-                .then(user => { /* user gets posted to db in json format */
-                    res.json(user[0]);
-                })
-        })
-        .then(trx.commit)
-        .catch(trx.rollback);
-    })
-        .catch(err => res.status(400).json('unable to register')) /* drops an error, for example when the same user already exists */
-});
+app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
 
 // /PROFILE/:USER ID
 app.get('/profile/:id', (req, res) => {
