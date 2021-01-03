@@ -20,11 +20,12 @@ const db = knex({
 });
 
 const app = express();
+const PORT = process.env.PORT || '3000';
 
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/', (req, res) => { res.send(db.users) });
+app.get('/', (req, res) => { res.send('it is working!') });
 // /SIGN IN --> check if the user typed in on the frontend Signin.js is already in the database
 app.post('/signin', (req, res) => { signin.handleSignin(req, res, db, bcrypt) });
 // /REGISTER --> create a new user based on the information typed in on the frontend Register.js
@@ -35,6 +36,6 @@ app.get('/profile/:id', (req, res) => {profile.handleProfileGet(req, res, db) })
 app.put('/image', (req, res) => { image.handleImage(req, res, db) });
 app.post('/imageurl', (req, res) => { image.handleApiCall(req, res) });
 
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`app is running on port ${process.env.PORT}`);
+app.listen(PORT, () => {
+    console.log(`app is running on port ${PORT}`);
 });
