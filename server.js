@@ -24,8 +24,8 @@ const PORT = process.env.PORT || '3000';
 
 app.set("port", PORT);
 
-app.use(bodyParser.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => { res.send('it is working!') });
 // /SIGN IN --> check if the user typed in on the frontend Signin.js is already in the database
