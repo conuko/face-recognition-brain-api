@@ -1,4 +1,3 @@
-import { json } from 'body-parser';
 import Clarifai from 'clarifai';
 
 // API key from Clarifai

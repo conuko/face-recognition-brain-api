@@ -27,7 +27,7 @@ app.set("port", PORT);
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => { res.send('it is working!') });
+app.get('/', (req, res) => { res.send(db.users) });
 // /SIGN IN --> check if the user typed in on the frontend Signin.js is already in the database
 app.post('/signin', (req, res) => { signin.handleSignin(req, res, db, bcrypt) });
 // /REGISTER --> create a new user based on the information typed in on the frontend Register.js
