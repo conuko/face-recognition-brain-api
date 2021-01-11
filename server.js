@@ -14,9 +14,9 @@ const app = express();
 const db = knex({
     client: 'pg',
     connection: {
-      host : '127.0.0.1',
+      host : 'postgresql-clear-53723',
       user : 'postgres',
-      password : 'marshall',
+      password : '',
       database : 'smartbrain'
     }
 });
